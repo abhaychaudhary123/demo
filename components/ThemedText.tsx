@@ -1,60 +1,20 @@
-import { Text, type TextProps, StyleSheet } from 'react-native';
+// React Imports
+import React, { ReactElement } from 'react'
+import { Text } from 'react-native'
 
-import { useThemeColor } from '@/hooks/useThemeColor';
+// CustomText FC
+const CustomText = ({ style, children, familyStyle, center, middle, textColor, weight, size, mb, mt, lh, ...restProps }: any): ReactElement => {
+    const fontSize = !size ? 18 : size
+    const color = !textColor ? '#000' : textColor
+    const textAlign = center ? 'center' : undefined
+    const verticalAlign = middle ? 'middle' : undefined
+    const marginBottom = mb ? mb : undefined
+    const marginTop = mt ? mt : undefined
+    const lineHeight = lh ? lh : undefined
+    const fontWeight = weight ? weight : undefined
 
-export type ThemedTextProps = TextProps & {
-  lightColor?: string;
-  darkColor?: string;
-  type?: 'default' | 'title' | 'defaultSemiBold' | 'subtitle' | 'link';
-};
-
-export function ThemedText({
-  style,
-  lightColor,
-  darkColor,
-  type = 'default',
-  ...rest
-}: ThemedTextProps) {
-  const color = useThemeColor({ light: lightColor, dark: darkColor }, 'text');
-
-  return (
-    <Text
-      style={[
-        { color },
-        type === 'default' ? styles.default : undefined,
-        type === 'title' ? styles.title : undefined,
-        type === 'defaultSemiBold' ? styles.defaultSemiBold : undefined,
-        type === 'subtitle' ? styles.subtitle : undefined,
-        type === 'link' ? styles.link : undefined,
-        style,
-      ]}
-      {...rest}
-    />
-  );
+    return <Text style={[{ color, fontSize, textAlign, verticalAlign, marginBottom, lineHeight, marginTop, fontWeight }, style]} {...restProps}>{children}</Text>
 }
 
-const styles = StyleSheet.create({
-  default: {
-    fontSize: 16,
-    lineHeight: 24,
-  },
-  defaultSemiBold: {
-    fontSize: 16,
-    lineHeight: 24,
-    fontWeight: '600',
-  },
-  title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    lineHeight: 32,
-  },
-  subtitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  link: {
-    lineHeight: 30,
-    fontSize: 16,
-    color: '#0a7ea4',
-  },
-});
+// Export FC
+export default CustomText
