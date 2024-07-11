@@ -1,9 +1,10 @@
-import CustomText from '@/components/ThemedText';
-import { PackagesData, RecommendedData } from '@/constants/Data';
-import { Ionicons } from '@expo/vector-icons';
-import React, { useEffect } from 'react';
-import { FlatList, Image, ImageBackground, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+// Imports
+import React, { useEffect } from 'react'
+import { FlatList, Image, ImageBackground, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
+import CustomText from '@/components/ThemedText'
+import { PackagesData, RecommendedData } from '@/constants/Data'
+import { Ionicons } from '@expo/vector-icons'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 export default function HomeScreen() {
     // App Assets
@@ -17,8 +18,7 @@ export default function HomeScreen() {
     // Update Count when selected item changes
     useEffect(() => {
         setCount(selectedItems.length)
-        setTotalAmount(selectedItems.reduce((accum: any, item: { price: any; }) => accum + (item.price || 0), 0));
-
+        setTotalAmount(selectedItems.reduce((accum: any, item: { price: any }) => accum + (item.price || 0), 0))
     }, [selectedItems])
 
     // Handle Select
@@ -128,7 +128,8 @@ export default function HomeScreen() {
             borderWidth: 1,
             borderColor: "#615793",
             borderRadius: 2,
-            paddingHorizontal: 10      
+            paddingHorizontal: 12,
+            paddingVertical: 5,
         },
         productImage: {
             width: 80,
@@ -162,7 +163,7 @@ export default function HomeScreen() {
         amountBox: {
             borderRadius: 5,
             flex: 1,
-            marginLeft: 10,
+            marginLeft: 17,
             alignItems: "flex-start",
             justifyContent: "center"
         },
@@ -174,12 +175,12 @@ export default function HomeScreen() {
         },
         selectedBox: {
             flexDirection: "row",
-            justifyContent: 'flex-end'
+            justifyContent: 'flex-end',
         },
         removeBox: {
             backgroundColor: "#643ffe",
-            paddingVertical: 5,
-            paddingHorizontal: 2,
+            paddingVertical: 8,
+            paddingHorizontal: 6,
             borderRadius: 5,
             alignSelf: "flex-start",
             alignItems: "center",
@@ -190,8 +191,8 @@ export default function HomeScreen() {
             alignSelf: "flex-start",
             alignItems: 'center',
             justifyContent: "flex-end",
-            paddingHorizontal: 10 ,
-            paddingVertical: 3,
+            paddingHorizontal: 12 ,
+            paddingVertical: 6,
             borderRadius: 4,
             backgroundColor: "#643ffe",
         },
