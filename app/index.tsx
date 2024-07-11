@@ -1,18 +1,41 @@
 import CustomText from '@/components/ThemedText';
 import { PackagesData, RecommendedData } from '@/constants/Data';
 import { Ionicons } from '@expo/vector-icons';
-import { FlatList, Image, ImageBackground, ScrollView, StyleSheet, Text, View } from 'react-native';
+import React, { useEffect } from 'react';
+import { FlatList, Image, ImageBackground, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function HomeScreen() {
     // App Assets
     const spa_image = require('@/assets/images/spa-image.png')
 
+    // States
+    const [selectedItems, setSelectedItems] = React.useState<any>([])
+    const [totalAmount, setTotalAmount] = React.useState<number>(0)
+    const [count, setCount] = React.useState<number>(0)
+
+    // Update Count when selected item changes
+    useEffect(() => {
+        setCount(selectedItems.length)
+        setTotalAmount(selectedItems.reduce((accum: any, item: { price: any; }) => accum + (item.price || 0), 0));
+
+    }, [selectedItems])
+
+    // Handle Select
+    const handleSelect = (item: any) => {
+        if (selectedItems.includes(item)) {
+            setSelectedItems(selectedItems.filter((currentItem: any) => currentItem !== item))
+        } else {
+            setSelectedItems([...selectedItems, item])
+        }
+    }
+
     // Styles
     const styles = StyleSheet.create({
         container: {
             flex: 1,
-            backgroundColor: "#ddd"
+            backgroundColor: "#ddd",
+            marginBottom: 20,
         },
         image: {
             justifyContent: 'center',
@@ -63,8 +86,8 @@ export default function HomeScreen() {
             padding: 10,
             borderWidth: 1,
             marginRight: 8,
-            borderColor: "#000",
-            borderRadius: 10
+            borderColor: "gray",
+            borderRadius: 10,
         },
         recommendedHeaderBox: {
             paddingHorizontal: 23,
@@ -80,7 +103,8 @@ export default function HomeScreen() {
         },
         titlePriceBox: {
             flexDirection: "column",
-            maxWidth: 140,
+            maxWidth: 120,
+            flex: 1,
         },
         timeBox: {
             flexDirection: "row",
@@ -90,7 +114,7 @@ export default function HomeScreen() {
         titleandSelectBox: {
             flexDirection: 'row',
             flex: 1,
-            paddingHorizontal: 10,
+            paddingLeft: 10,
             justifyContent: "space-between"
         },
         flatListStyles: {
@@ -148,6 +172,48 @@ export default function HomeScreen() {
             alignItems: "flex-end",
             justifyContent: "center"
         },
+        selectedBox: {
+            flexDirection: "row",
+            justifyContent: 'flex-end'
+        },
+        removeBox: {
+            backgroundColor: "#643ffe",
+            paddingVertical: 5,
+            paddingHorizontal: 2,
+            borderRadius: 5,
+            alignSelf: "flex-start",
+            alignItems: "center",
+            marginRight: 2,
+        },
+        activeSelectBox: {
+            flexDirection: "row",
+            alignSelf: "flex-start",
+            alignItems: 'center',
+            justifyContent: "flex-end",
+            paddingHorizontal: 10 ,
+            paddingVertical: 3,
+            borderRadius: 4,
+            backgroundColor: "#643ffe",
+        },
+        menu: {
+            backgroundColor: "#fff",
+            padding: 5,
+            alignItems: "center",
+            justifyContent: "center",
+            borderRadius: 50,
+            borderColor: "#ddd",
+            position: "absolute",
+            right: 16,
+            top: 12,
+            shadowColor: "#000000",
+            shadowOpacity: 0.8,
+            shadowRadius: 2,
+            shadowOffset: {
+                height: 1,
+                width: 1
+            },
+            elevation: 5
+        }
     })
 
 
@@ -163,19 +229,36 @@ export default function HomeScreen() {
 
                 <View style={styles.titleandSelectBox}>
                     <View style={styles.titlePriceBox}>
-                        <CustomText weight='bold'>{item.title}</CustomText>
+                        <CustomText weight='bold' lh={27}>{item.title}</CustomText>
                         <CustomText textColor="gray" mt={2}>${item.price}</CustomText>
                         <View style={styles.timeBox}>
-                            <Ionicons name='timer-outline' size={14} color={'gray'} />
+                            <Ionicons name='timer-outline' size={16} color={'gray'} />
                             <CustomText size={14} textColor="gray" >{item.time} Mins</CustomText>
                         </View>
                     </View>
 
+                    
                     {/* Select Box */}
-                    <View style={styles.selectBox}>
-                        <CustomText textColor='#615793' >Select</CustomText>
-                        <Ionicons name='add-outline' size={20} color={'#615793'} />
-                    </View>
+                    {
+                        selectedItems.includes(item) ?
+                            <View style={styles.selectedBox}>
+                                <Pressable onPress={() => handleSelect(item)}>
+                                    <View style={styles.removeBox}>
+                                        <Ionicons name='remove-outline' size={20} color={'#fff'} />
+                                    </View>
+                                </Pressable>
+                                <View style={styles.activeSelectBox}>
+                                    <CustomText textColor='#fff'>Selected</CustomText>
+                                </View>
+                            </View>
+                        :
+                        <Pressable onPress={() => handleSelect(item)}>
+                            <View style={styles.selectBox}>
+                                <CustomText textColor='#615793' >Select</CustomText>
+                                <Ionicons name='add-outline' size={20} color={'#615793'} />
+                            </View> 
+                        </Pressable>
+                    }
                 </View>
 
             </View>
@@ -194,19 +277,35 @@ export default function HomeScreen() {
 
                 <View style={styles.titleandSelectBox}>
                     <View style={styles.titlePriceBox}>
-                        <CustomText weight='bold'>{item.title}</CustomText>
+                        <CustomText weight='bold' lh={27}>{item.title}</CustomText>
                         <CustomText textColor="gray" mt={2}>${item.price}</CustomText>
                         <View style={styles.timeBox}>
-                            <Ionicons name='timer-outline' size={14} color={'gray'} />
+                            <Ionicons name='timer-outline' size={16} color={'gray'} />
                             <CustomText size={14} textColor="gray" >{item.time} Mins</CustomText>
                         </View>
                     </View>
 
                     {/* Select Box */}
-                    <View style={styles.selectBox}>
-                        <CustomText textColor='#615793' >Select</CustomText>
-                        <Ionicons name='add-outline' size={20} color={'#615793'} />
-                    </View>
+                    {
+                        selectedItems.includes(item) ?
+                            <View style={styles.selectedBox}>
+                                <Pressable onPress={() => handleSelect(item)}>
+                                    <View style={styles.removeBox}>
+                                        <Ionicons name='remove-outline' size={20} color={'#fff'} />
+                                    </View>
+                                </Pressable>
+                                <View style={styles.activeSelectBox}>
+                                    <CustomText textColor='#fff' >Selected</CustomText>
+                                </View>
+                            </View>
+                        :
+                        <Pressable onPress={() => handleSelect(item)}>
+                            <View style={styles.selectBox}>
+                                <CustomText textColor='#615793' >Select</CustomText>
+                                <Ionicons name='add-outline' size={20} color={'#615793'} />
+                            </View> 
+                        </Pressable>
+                    }
                 </View>
 
             </View>
@@ -215,7 +314,7 @@ export default function HomeScreen() {
 
     return (
         <SafeAreaView style={styles.container}>
-            <ScrollView>
+            <ScrollView showsVerticalScrollIndicator={false}>
                 
                 {/* Hero Section */}
                 <ImageBackground source={spa_image} resizeMode="cover" style={styles.image}>
@@ -231,7 +330,7 @@ export default function HomeScreen() {
                         <View style={styles.actionBox}>
                             
                             <View>
-                                <CustomText style={styles.text} size={13} >FOR MEN</CustomText>
+                                <CustomText style={styles.text} size={12} >FOR MEN</CustomText>
                                 <CustomText weight='bold' size={22} textColor='#fff'>Woodlands Hills SPA</CustomText> 
                                 <CustomText size={13} textColor='#fff'>Keira throughway • 5.0 Kms • $$</CustomText>
                             </View>
@@ -251,21 +350,24 @@ export default function HomeScreen() {
                 <View style={styles.optionsBox}>
                     <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                         <View style={styles.activeOption}>
-                            <Text>Recommended</Text>
+                            <CustomText size={14} textColor='#643ffe'>Recommended</CustomText>
                         </View>
                         <View style={styles.inActiveOption}>
-                            <Text>Packages</Text>
+                            <CustomText size={14} textColor='gray'>Packages</CustomText>
                         </View>
                         <View style={styles.inActiveOption}>
-                            <Text>Face Care</Text>
+                            <CustomText size={14} textColor='gray'>Face Care</CustomText>
                         </View>
                         <View style={styles.inActiveOption}>
-                            <Text>Lorem Ipsum</Text>
+                            <CustomText size={14} textColor='gray'>Lorem Ipsum</CustomText>
                         </View>
                         <View style={styles.inActiveOption}>
-                            <Text>Lorem Ipsum</Text>
+                            <CustomText size={14} textColor='gray'>Lorem Ipsum</CustomText>
                         </View>
                     </ScrollView>
+                    <View style={styles.menu}>
+                        <Ionicons name={'menu'} size={30} />
+                    </View>
                 </View>
 
                 {/* Recommended */}
@@ -275,7 +377,7 @@ export default function HomeScreen() {
                     renderItem={renderRecommended}
                     ListHeaderComponent={() => (
                         <View style={styles.recommendedHeaderBox}>
-                            <CustomText weight='bold' >Recommended ({RecommendedData.length})</CustomText>
+                            <CustomText weight='bold' size={23} >Recommended ({RecommendedData.length + PackagesData.length})</CustomText>
                         </View>
                     )}
                     showsVerticalScrollIndicator={false}
@@ -289,7 +391,7 @@ export default function HomeScreen() {
                     renderItem={renderPackages}
                     ListHeaderComponent={() => (
                         <View style={styles.recommendedHeaderBox}>
-                            <CustomText weight='bold' >Packages</CustomText>
+                            <CustomText weight='bold' size={23}>Packages</CustomText>
                         </View>
                     )}
                     showsVerticalScrollIndicator={false}
@@ -297,25 +399,31 @@ export default function HomeScreen() {
                 />
 
                 {/* CheckoutBox */}
-                <View style={styles.checkoutBox}>
-                    <View style={styles.checkoutInnerBox}>
-                        {/* Total Count */}
-                        <View style={styles.countBox}>
-                            <CustomText textColor='#fff' weight='bold'>3</CustomText>
-                        </View>
+                <View>
+                    {
+                        count != 0 && (
+                            <View style={styles.checkoutBox}>
+                                <View style={styles.checkoutInnerBox}>
+                                    {/* Total Count */}
+                                    <View style={styles.countBox}>
+                                        <CustomText textColor='#fff' weight='bold'>{count}</CustomText>
+                                    </View>
 
-                        {/* Amount */}
-                        <View style={styles.amountBox}>
-                            <CustomText textColor='#fff' size={24} weight='bold'>$449</CustomText>
-                            <CustomText textColor='#fff' size={14}>plus taxes</CustomText>
-                        </View>
+                                    {/* Amount */}
+                                    <View style={styles.amountBox}>
+                                        <CustomText textColor='#fff' size={24} weight='bold'>${totalAmount}</CustomText>
+                                        <CustomText textColor='#fff' size={14}>plus taxes</CustomText>
+                                    </View>
 
-                        {/* Next */}
-                        <View style={styles.nextBox}>
-                            <CustomText textColor='#fff' size={24} weight='bold'>Next</CustomText>
-                        </View>
+                                    {/* Next */}
+                                    <View style={styles.nextBox}>
+                                        <CustomText textColor='#fff' size={24} weight='bold'>Next</CustomText>
+                                    </View>
 
-                    </View>
+                                </View>
+                            </View>
+                        )
+                    }
                 </View>
 
             </ScrollView>
